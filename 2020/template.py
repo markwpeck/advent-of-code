@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
+import sys
 from datetime import datetime
 
-startTime = datetime.now()
-
-# Starting at the top-left corner of your map and following a slope of right 3 and down 1, how many trees would you encounter?
-input = open("input.txt", "r").readlines()
 
 
-print(datetime.now() - startTime)
+if __name__ == "__main__":
+	inputfile = sys.argv[1]
+	lines = open("input.txt", "r").readlines()
+	startTime = datetime.now()
+	print(datetime.now() - startTime)
