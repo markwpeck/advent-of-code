@@ -5,8 +5,16 @@ import re
 
 field_spec = "^([a-z]+):(\d+)-(\d+)or(\d+)-(\d+)$"
 
-def get_field_positions(field_possibilities):
-	field_positions = []
+def get_field_positions(fposs):
+	field_positions = {}
+	while len(field_positions) < len(fposs):
+		print(fposs)
+		for i in fposs.keys():
+			if len(fposs[i]) == 1:
+				field = fposs[i].pop()
+				for j in fposs.keys():
+					fposs[j].discard(field)
+				field_positions[i] = field
 	return field_positions
 
 def get_field_possibilities(field_values,valid_tickets):
@@ -46,7 +54,7 @@ def readfile(lines):
 			range1 = range(int(match.group(2)),int(match.group(3)) + 1)
 			field_values[field_name].update(range1)
 			all_fields.update(range1)
-			range2 = range(int(match.group(4)),int(match.group(5)) + 1):
+			range2 = range(int(match.group(4)),int(match.group(5)) + 1)
 			field_values[field_name].update(range2)
 			all_fields.update(range2)
 		elif (section == "yourticket"):
@@ -70,13 +78,13 @@ if __name__ == "__main__":
 	(field_values,all_fields,valid_tickets,yourticket) = readfile(open(inputfile, "r").readlines())
 	field_possibilities = get_field_possibilities(field_values,valid_tickets)
 	field_positions = get_field_positions(field_possibilities)
-	# print("Field Positions:")
-	# for p in range(len(field_positions)):
-	# 	print("{}: {}".format(p,field_positions[p]))
+	print("Field Positions:")
+	for p in sorted(field_positions.keys()):
+		print("{}: {}".format(p,field_positions[p]))
 
-	# result = 1
-	# for i in range(len(yourticket)):
-	# 	if "departure" in field_positions[i]:
-	# 		result *= yourticket[i]
-	# print("P2 Answer:{}".format(result))
+	result = 1
+	for i in range(len(yourticket)):
+		if "departure" in field_positions[i]:
+			result *= yourticket[i]
+	print("P2 Answer:{}".format(result))
 	print(datetime.now() - startTime)
