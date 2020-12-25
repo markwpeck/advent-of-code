@@ -21,7 +21,12 @@ def get_regex(rulesets,idx,depth):
 		for option in ruleset:
 			opt_str = ""
 			for item in option:
-				opt_str += get_regex(rulesets,int(item),depth + 1)
+				if item in ["8","11"] and part == "b" and int(item) == idx:
+					if depth <= 7:
+						print("Index {} ({}): Hit item {}".format(idx,depth,item))
+						opt_str += get_regex(rulesets,int(item),depth + 1)
+				else:
+					opt_str += get_regex(rulesets,int(item),depth)
 			options.append(opt_str)
 		result = "(" + "|".join(options) + ")"
 	return result	
@@ -32,6 +37,7 @@ if __name__ == "__main__":
 	rulesets = {}
 	messages = []
 	lines = open(inputfile, "r").readlines()
+	part = input("Part a or part b? ")
 	section = "rules"
 	for line in lines:
 		line = line.rstrip()
@@ -40,6 +46,10 @@ if __name__ == "__main__":
 			continue
 		if section == "rules":
 			(index,rule) = line.split(":")
+			if index == "8" and part == "b":
+				rule = "42 | 42 8"
+			elif index == "11" and part == "b":
+				rule = "42 31 | 42 11 31"
 			rulesets[int(index)] = build_ruleset(rule.strip())
 		else:
 			messages.append(line)
@@ -53,12 +63,16 @@ if __name__ == "__main__":
 	matches = 0
 
 	pattern = get_regex(rulesets,0,0)
-	print("Regex Pattern:{}".format(pattern))
+	# print("Regex Pattern:{}".format(pattern))
+	# print("Length:{}".format(len(pattern)))
 	rule0 = re.compile(pattern)
 
 	for message in messages:
 		if rule0.fullmatch(message):
 			matches += 1
+		# 	print("  ({:3}) {} is a valid message.".format(len(message),message))
+		else:
+			print("  ({:3}) {} is NOT a valid message.".format(len(message),message))
 
 	print("Total Messages:{}".format(len(messages)))
 	print("Matches:{}".format(matches))
